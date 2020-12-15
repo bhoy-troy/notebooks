@@ -1,7 +1,14 @@
 version: '3'
+
+networks:
+  data-science:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.30.1.0/24
+
 services:
-
-
   spark-master:
     image: gettyimages/spark
     command: bin/spark-class org.apache.spark.deploy.master.Master -h spark-master
@@ -12,6 +19,9 @@ services:
     volumes:
       - spark-master-volume:/conf
       - spark-master-volume:/tmp/data
+    networks:
+      data-science:
+        ipv4_address: 172.30.1.101
     ports:
       - 8000:8080
 
@@ -28,19 +38,27 @@ services:
     volumes:
       - spark-worker-volume:/conf
       - spark-worker-volume:/tmp/data
+    networks:
+      data-science:
+        ipv4_address: 172.30.1.102
     ports:
       - "8081-8100:8081-8100"
 
 
   zeppelin:
-    build: ./zeppelin/
+    build: image/
     image: zeppelin:0.8.1-hadoop-2.8.0-spark-2.4.1
     ports:
       - 8080:8080
       - 8443:8443
+      - 4040:4040
+    networks:
+      data-science:
+        ipv4_address: 172.30.1.100
     volumes:
-      - spark-master-volume:/opt/zeppelin/logs
-      - spark-master-volume:/opt/zeppelin/notebookcd
+      #      - ${PWD}/spark-master-volume:/opt/image/logs
+      - spark-master-volume:/opt/image/logs
+      - spark-master-volume:/opt/image/notebookcd
     environment:
       MASTER: "spark://spark-master:7077"
       SPARK_MASTER: "spark://spark-master:7077"
