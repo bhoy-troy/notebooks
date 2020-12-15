@@ -1,0 +1,16 @@
+version: '3.4'
+services:
+  mariadb:
+    image: mariadb/server:10.2
+    container_name:  mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: bondDB
+      MYSQL_USER: bonduser
+      MYSQL_PASSWORD: bondpasswd
+    ports:
+      - "3306:3306"
+#    restart: on-failure
+    volumes:
+      - ${PWD}/mariadb:/var/lib/mysql
+

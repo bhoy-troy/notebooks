@@ -1,0 +1,55 @@
+version: '3'
+services:
+
+
+  spark-master:
+    image: gettyimages/spark
+    command: bin/spark-class org.apache.spark.deploy.master.Master -h spark-master
+    hostname: spark-master
+    environment:
+      SPARK_CONF_DIR: /conf
+      SPARK_PUBLIC_DNS: 10.129.34.90
+    volumes:
+      - spark-master-volume:/conf
+      - spark-master-volume:/tmp/data
+    ports:
+      - 8000:8080
+
+  spark-worker:
+    image: gettyimages/spark
+    command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    hostname: spark-worker
+    environment:
+      SPARK_MASTER_URL: spark-master:7077
+      SPARK_CONF_DIR: /conf
+      SPARK_PUBLIC_DNS: 10.129.34.90
+      SPARK_WORKER_CORES: 2
+      SPARK_WORKER_MEMORY: 2g
+    volumes:
+      - spark-worker-volume:/conf
+      - spark-worker-volume:/tmp/data
+    ports:
+      - "8081-8100:8081-8100"
+
+
+  zeppelin:
+    build: ./zeppelin/
+    image: zeppelin:0.8.1-hadoop-2.8.0-spark-2.4.1
+    ports:
+      - 8080:8080
+      - 8443:8443
+    volumes:
+      - spark-master-volume:/opt/zeppelin/logs
+      - spark-master-volume:/opt/zeppelin/notebookcd
+    environment:
+      MASTER: "spark://spark-master:7077"
+      SPARK_MASTER: "spark://spark-master:7077"
+      SPARK_HOME: /usr/spark-2.4.1
+    depends_on:
+      - spark-master
+
+volumes:
+  spark-master-volume:
+    driver: local
+  spark-worker-volume:
+    driver: local
