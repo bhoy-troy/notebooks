@@ -10,8 +10,8 @@ networks:
 
 services:
   spark-master:
-    image: gettyimages/spark
-
+    build: base/
+    image: jtroy/spark-base:0.1
     command: bin/spark-class org.apache.spark.deploy.master.Master -h spark-master
     hostname: spark-master
     environment:
@@ -27,11 +27,14 @@ services:
     networks:
       data-science:
         ipv4_address: 172.30.10.101
+
     ports:
       - 8000:8080
+      - 4041:4040
 
   spark-worker:
-    image: gettyimages/spark
+    build: base/
+    image: jtroy/spark-base:0.1
     command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
     hostname: spark-worker
     environment:
@@ -47,17 +50,22 @@ services:
     networks:
       data-science:
         ipv4_address: 172.30.10.102
+    expose:
+      - 4040
     ports:
       - "8081-8100:8081-8100"
+      - 4042:4040
 
   zeppelin:
     build: image/
     image: zeppelin:0.8.2-hadoop-3.0.0-spark-2.4.1
     hostname: zeepelin-local
+    expose:
+      - 4040
     ports:
       - 9080:8080
       - 9443:8443
-      - 4040:4040
+      - 4043:4040
     networks:
       data-science:
         ipv4_address: 172.30.10.100

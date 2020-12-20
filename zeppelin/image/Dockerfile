@@ -3,7 +3,7 @@ WORKDIR /zeppelin
 
 LABEL maintainer = "James Troy"
 
-FROM gettyimages/spark
+FROM jtroy/spark-base:0.1
 WORKDIR /zeppelin/
 COPY --from=builder /zeppelin    .
 
@@ -13,8 +13,6 @@ RUN apt-get update -y && \
 ENV SPARK_HOME "/usr/spark"
 RUN echo '{ "allow_root": true }' > /root/.bowerrc
 
-EXPOSE 8080
-EXPOSE 8443
-EXPOSE 4040
+EXPOSE 8080 8443 4040
 
 CMD ["/zeppelin/bin/zeppelin.sh"]
