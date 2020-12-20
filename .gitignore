@@ -140,3 +140,7 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+
+zeppelin/spark-master-volume
+zeppelin/spark-worker-volume

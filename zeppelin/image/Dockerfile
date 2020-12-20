@@ -1,19 +1,20 @@
+FROM  apache/zeppelin:0.8.0 as builder
+WORKDIR /zeppelin
+
+LABEL maintainer = "James Troy"
+
 FROM gettyimages/spark
+WORKDIR /zeppelin/
+COPY --from=builder /zeppelin    .
 
-ENV APACHE_SPARK_VERSION 2.4.1
-ENV APACHE_HADOOP_VERSION 2.8.0
-ENV ZEPPELIN_VERSION 0.8.1
+RUN apt-get update -y && \
+    apt-get upgrade -y
 
-RUN apt-get update
-RUN set -x \
-    && curl -fSL "https://downloads.apache.org/zeppelin/zeppelin-0.8.2/zeppelin-0.8.2-bin-all.tgz" -o /tmp/zeppelin.tgz \
-    && tar -xzvf /tmp/zeppelin.tgz -C /opt/ \
-    && mv /opt/zeppelin-* /opt/zeppelin \
-    && rm /tmp/zeppelin.tgz
+ENV SPARK_HOME "/usr/spark"
+RUN echo '{ "allow_root": true }' > /root/.bowerrc
 
-ENV SPARK_SUBMIT_OPTIONS "--jars /opt/zeppelin/sansa-examples-spark-2016-12.jar"
-ENV SPARK_HOME "/usr/spark-2.4.1/"
+EXPOSE 8080
+EXPOSE 8443
+EXPOSE 4040
 
-WORKDIR /opt/zeppelin
-
-CMD ["/opt/zeppelin/bin/zeppelin.sh"]
+CMD ["/zeppelin/bin/zeppelin.sh"]

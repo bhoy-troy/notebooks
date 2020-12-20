@@ -10,7 +10,6 @@ services:
       MYSQL_PASSWORD: bondpasswd
     ports:
       - "3306:3306"
-#    restart: on-failure
     volumes:
       - ${PWD}/mariadb:/var/lib/mysql
 

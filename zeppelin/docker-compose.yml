@@ -3,26 +3,30 @@ version: '3'
 networks:
   data-science:
 
-    driver: bridge
     ipam:
       driver: default
       config:
-        - subnet: 172.30.1.0/24
+        - subnet: 172.30.10.0/24
 
 services:
   spark-master:
     image: gettyimages/spark
+
     command: bin/spark-class org.apache.spark.deploy.master.Master -h spark-master
     hostname: spark-master
     environment:
       SPARK_CONF_DIR: /conf
-      SPARK_PUBLIC_DNS: 10.129.34.90
+      SPARK_LOCAL_HOSTNAME: spark-worker
+      SPARK_IDENT_STRING: spark-worker
+      SPARK_PUBLIC_DNS: 172.30.1.101
+    #      SPARK_PUBLIC_DNS: 10.129.34.90
     volumes:
-      - spark-master-volume:/conf
-      - spark-master-volume:/tmp/data
+      - ${PWD}/spark-master-volume/conf:/conf
+      - ${PWD}/spark-master-volume/tmp/data:/tmp/data
+      - ${PWD}/spark-master-volume/notebook:/zeppelin/notebook/
     networks:
       data-science:
-        ipv4_address: 172.30.1.101
+        ipv4_address: 172.30.10.101
     ports:
       - 8000:8080
 
@@ -33,42 +37,36 @@ services:
     environment:
       SPARK_MASTER_URL: spark-master:7077
       SPARK_CONF_DIR: /conf
-      SPARK_PUBLIC_DNS: 10.129.34.90
-      SPARK_WORKER_CORES: 2
-      SPARK_WORKER_MEMORY: 2g
+      SPARK_LOCAL_HOSTNAME: spark-worker
+      SPARK_IDENT_STRING: spark-worker
+      SPARK_PUBLIC_DNS: 172.30.10.102
+
     volumes:
-      - spark-worker-volume:/conf
-      - spark-worker-volume:/tmp/data
+      - ${PWD}/spark-worker-volume/conf:/conf
+      - ${PWD}/spark-worker-volume/tmp/data:/tmp/data
     networks:
       data-science:
-        ipv4_address: 172.30.1.102
+        ipv4_address: 172.30.10.102
     ports:
       - "8081-8100:8081-8100"
 
-
   zeppelin:
     build: image/
-    image: zeppelin:0.8.1-hadoop-2.8.0-spark-2.4.1
+    image: zeppelin:0.8.2-hadoop-3.0.0-spark-2.4.1
+    hostname: zeepelin-local
     ports:
-      - 8080:8080
-      - 8443:8443
+      - 9080:8080
+      - 9443:8443
       - 4040:4040
     networks:
       data-science:
-        ipv4_address: 172.30.1.100
+        ipv4_address: 172.30.10.100
     volumes:
-      #      - ${PWD}/spark-master-volume:/opt/image/logs
-      - spark-master-volume:/opt/image/logs
-      - spark-master-volume:/opt/image/notebookcd
+      - ${PWD}/spark-master-volume/opt/image/zeppelin-logs:/opt/image/logs
+      - ${PWD}/spark-master-volume/notebook:/zeppelin/notebook/
     environment:
       MASTER: "spark://spark-master:7077"
       SPARK_MASTER: "spark://spark-master:7077"
-      SPARK_HOME: /usr/spark-2.4.1
+      SPARK_HOME: /usr/spark
     depends_on:
       - spark-master
-
-volumes:
-  spark-master-volume:
-    driver: local
-  spark-worker-volume:
-    driver: local
