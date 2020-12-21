@@ -38,6 +38,9 @@ Install docker-compose
     sudo pip install docker-compose
     
 
+### Set up the hosts
+
+    bash ./hosts.sh
     
 ### Run Docker spark cluster
 Run
@@ -50,8 +53,10 @@ Any issues building, then try
        
 Spark url is [http://localhost:8081/](http://localhost:8081/)
 
-Zeppelin url is [http://localhost:9080/](http://localhost:9080/#/)
-Livy [http://localhost:8998/ui](http://localhost:8998/ui)
+Zeppelin url is [http://ds-zeppelin:9080/](http://ds-zeppelin:9080/#/)
+
+Livy [http://ds-livy:8998/ui](http://ds-livy:8998/ui)
+
 
 
 ### Linting

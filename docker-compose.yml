@@ -3,7 +3,7 @@ version: '3'
 services:
   postgres:
     image: postgres:11.5
-    hostname: postgres
+    hostname: ds-postgres
     container_name: data-science-db
     environment:
       POSTGRES_PASSWORD: password
@@ -15,12 +15,12 @@ services:
       data-science:
         ipv4_address: 172.30.10.105
     extra_hosts:
-      - "zeppelin:172.30.10.100"
+      - "ds-zeepelin:172.30.10.100"
       - "spark-master:172.30.10.101"
       - "spark-worker:172.30.10.102"
-      - "hive:172.30.10.103"
-      - "livy:172.30.10.104"
-      - "postgres:172.30.10.105"
+      - "ds-hive:172.30.10.103"
+      - "ds-livy:172.30.10.104"
+      - "ds-postgres:172.30.10.105"
 
   spark-master:
     build: base/
@@ -47,12 +47,12 @@ services:
       data-science:
         ipv4_address: 172.30.10.101
     extra_hosts:
-      - "zeppelin:172.30.10.100"
+      - "ds-zeepelin:172.30.10.100"
       - "spark-master:172.30.10.101"
       - "spark-worker:172.30.10.102"
-      - "hive:172.30.10.103"
-      - "livy:172.30.10.104"
-      - "postgres:172.30.10.105"
+      - "ds-hive:172.30.10.103"
+      - "ds-livy:172.30.10.104"
+      - "ds-postgres:172.30.10.105"
     ports:
       - 8000:8080
 
@@ -98,12 +98,12 @@ services:
       data-science:
         ipv4_address: 172.30.10.102
     extra_hosts:
-      - "zeppelin:172.30.10.100"
+      - "ds-zeepelin:172.30.10.100"
       - "spark-master:172.30.10.101"
       - "spark-worker:172.30.10.102"
-      - "hive:172.30.10.103"
-      - "livy:172.30.10.104"
-      - "postgres:172.30.10.105"
+      - "ds-hive:172.30.10.103"
+      - "ds-livy:172.30.10.104"
+      - "ds-postgres:172.30.10.105"
     expose:
       - 4040
     ports:
@@ -112,7 +112,7 @@ services:
   livy:
     build: livy/
     image: livy:0.7.0-hadoop-3.0.0-spark-2.4.1
-    hostname: livy
+    hostname: ds-livy
     container_name: data-science-livy
     depends_on:
       - spark-master
@@ -133,17 +133,17 @@ services:
       data-science:
         ipv4_address: 172.30.10.104
     extra_hosts:
-      - "zeppelin:172.30.10.100"
+      - "ds-zeepelin:172.30.10.100"
       - "spark-master:172.30.10.101"
       - "spark-worker:172.30.10.102"
-      - "hive:172.30.10.103"
-      - "livy:172.30.10.104"
-      - "postgres:172.30.10.105"
+      - "ds-hive:172.30.10.103"
+      - "ds-livy:172.30.10.104"
+      - "ds-postgres:172.30.10.105"
 
   zeppelin:
     build: zeppelin/
     image: zeppelin:0.8.2-hadoop-3.0.0-spark-2.4.1
-    hostname: zeepelin
+    hostname: ds-zeepelin
     container_name: data-science-zeppelin
     expose:
       - 4040
@@ -164,12 +164,12 @@ services:
       SPARK_MASTER: "spark://spark-master:7077"
       SPARK_HOME: /usr/spark
     extra_hosts:
-      - "zeppelin:172.30.10.100"
+      - "ds-zeepelin:172.30.10.100"
       - "spark-master:172.30.10.101"
       - "spark-worker:172.30.10.102"
-      - "hive:172.30.10.103"
-      - "livy:172.30.10.104"
-      - "postgres:172.30.10.105"
+      - "ds-hive:172.30.10.103"
+      - "ds-livy:172.30.10.104"
+      - "ds-postgres:172.30.10.105"
     depends_on:
       - spark-master
       - spark-worker
@@ -178,7 +178,7 @@ services:
   hive:
     build: hive/
     image: hive:3.1.2-hadoop-3.0.0-spark-2.4.1
-    hostname: hive
+    hostname: ds-hive
     container_name: data-science-hive
     expose:
       - 4040
@@ -199,12 +199,12 @@ services:
       SPARK_MASTER: "spark://spark-master:7077"
       SPARK_HOME: /usr/spark
     extra_hosts:
-      - "zeppelin:172.30.10.100"
+      - "ds-zeepelin:172.30.10.100"
       - "spark-master:172.30.10.101"
       - "spark-worker:172.30.10.102"
-      - "hive:172.30.10.103"
-      - "livy:172.30.10.104"
-      - "postgres:172.30.10.105"
+      - "ds-hive:172.30.10.103"
+      - "ds-livy:172.30.10.104"
+      - "ds-postgres:172.30.10.105"
     depends_on:
       - spark-master
       - postgres

@@ -11,13 +11,12 @@ WORKDIR /opt
 
 # Install Hive and PostgreSQL JDBC
 RUN apt-get update && \
-	curl https://ftp.heanet.ie/mirrors/www.apache.org/dist/hive/hive-${HIVE_VERSION}/apache-hive-${HIVE_VERSION}-bin.tar.gz  -o apache-hive-$HIVE_VERSION-bin.tar.gz && \
-	tar -xzvf apache-hive-$HIVE_VERSION-bin.tar.gz && \
+	curl https://ftp.heanet.ie/mirrors/www.apache.org/dist/hive/hive-${HIVE_VERSION}/apache-hive-${HIVE_VERSION}-bin.tar.gz  \
+	     -o apache-hive-$HIVE_VERSION-bin.tar.gz && \
+	tar -xzf apache-hive-$HIVE_VERSION-bin.tar.gz && \
 	mv apache-hive-$HIVE_VERSION-bin hive && \
 	rm apache-hive-${HIVE_VERSION}-bin.tar.gz && \
-	curl https://jdbc.postgresql.org/download/postgresql-42.1.4.jar -o ${HIVE_HOME}/lib/postgresql-jdbc.jar && \
-	apt-get clean && \
-	rm -rf /var/lib/apt/lists/*
+	curl https://jdbc.postgresql.org/download/postgresql-42.1.4.jar -o ${HIVE_HOME}/lib/postgresql-jdbc.jar
 
 
 #Custom configuration goes here
