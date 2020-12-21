@@ -142,5 +142,7 @@ dmypy.json
 cython_debug/
 
 
-zeppelin/spark-master-volume
-zeppelin/spark-worker-volume
+spark-master-volume
+spark-worker-volume
+data
+livy_batches

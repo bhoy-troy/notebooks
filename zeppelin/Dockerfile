@@ -14,5 +14,7 @@ ENV SPARK_HOME "/usr/spark"
 RUN echo '{ "allow_root": true }' > /root/.bowerrc
 
 EXPOSE 8080 8443 4040
+RUN apt-get install python-lxml python-html5lib  -y
+RUN pip install  requests beautifulsoup4
 
 CMD ["/zeppelin/bin/zeppelin.sh"]
