@@ -54,7 +54,12 @@ Zeppelin url is [http://localhost:9080/](http://localhost:9080/#/)
 Livy [http://localhost:8998/ui](http://localhost:8998/ui)
 
 
-### Setting up black
+### Linting
+
+    docker run --rm -i hadolint/hadolint < livy/Dockerfile
+
+
+### Setting up black for Python pep8 in Jupyter
 
     pip install black
     jupyter nbextension install https://github.com/drillan/jupyter-black/archive/master.zip 

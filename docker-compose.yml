@@ -1,37 +1,33 @@
 version: '3'
 
-networks:
-  data-science:
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.30.10.0/24
-
 services:
-  hive:
+  postgres:
     image: postgres:11.5
-    hostname: hive
+    hostname: postgres
+    container_name: data-science-db
     environment:
       POSTGRES_PASSWORD: password
     expose:
       - 5432
     volumes:
-      - ./hive/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       data-science:
-        ipv4_address: 172.30.10.103
+        ipv4_address: 172.30.10.105
     extra_hosts:
+      - "zeppelin:172.30.10.100"
       - "spark-master:172.30.10.101"
       - "spark-worker:172.30.10.102"
       - "hive:172.30.10.103"
       - "livy:172.30.10.104"
-      - "zeppelin:172.30.10.100"
+      - "postgres:172.30.10.105"
 
   spark-master:
     build: base/
     image: jtroy/spark-base:0.1
     command: bin/spark-class org.apache.spark.deploy.master.Master -h spark-master
     hostname: spark-master
+    container_name: data-science-master
     environment:
       SPARK_CONF_DIR: /conf
       SPARK_IDENT_STRING: spark-master
@@ -51,11 +47,12 @@ services:
       data-science:
         ipv4_address: 172.30.10.101
     extra_hosts:
+      - "zeppelin:172.30.10.100"
       - "spark-master:172.30.10.101"
       - "spark-worker:172.30.10.102"
       - "hive:172.30.10.103"
       - "livy:172.30.10.104"
-      - "zeppelin:172.30.10.100"
+      - "postgres:172.30.10.105"
     ports:
       - 8000:8080
 
@@ -79,6 +76,7 @@ services:
     image: jtroy/spark-base:0.1
     command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
     hostname: spark-worker
+    container_name: data-science-worker
     environment:
       SPARK_MASTER_URL: spark://spark-master:7077
       SPARK_CONF_DIR: /conf
@@ -100,11 +98,12 @@ services:
       data-science:
         ipv4_address: 172.30.10.102
     extra_hosts:
+      - "zeppelin:172.30.10.100"
       - "spark-master:172.30.10.101"
       - "spark-worker:172.30.10.102"
       - "hive:172.30.10.103"
       - "livy:172.30.10.104"
-      - "zeppelin:172.30.10.100"
+      - "postgres:172.30.10.105"
     expose:
       - 4040
     ports:
@@ -114,6 +113,7 @@ services:
     build: livy/
     image: livy:0.7.0-hadoop-3.0.0-spark-2.4.1
     hostname: livy
+    container_name: data-science-livy
     depends_on:
       - spark-master
       - spark-worker
@@ -133,16 +133,18 @@ services:
       data-science:
         ipv4_address: 172.30.10.104
     extra_hosts:
+      - "zeppelin:172.30.10.100"
       - "spark-master:172.30.10.101"
       - "spark-worker:172.30.10.102"
       - "hive:172.30.10.103"
       - "livy:172.30.10.104"
-      - "zeppelin:172.30.10.100"
+      - "postgres:172.30.10.105"
 
   zeppelin:
     build: zeppelin/
     image: zeppelin:0.8.2-hadoop-3.0.0-spark-2.4.1
     hostname: zeepelin
+    container_name: data-science-zeppelin
     expose:
       - 4040
       - 8890
@@ -162,14 +164,54 @@ services:
       SPARK_MASTER: "spark://spark-master:7077"
       SPARK_HOME: /usr/spark
     extra_hosts:
+      - "zeppelin:172.30.10.100"
       - "spark-master:172.30.10.101"
       - "spark-worker:172.30.10.102"
       - "hive:172.30.10.103"
       - "livy:172.30.10.104"
-      - "zeppelin:172.30.10.100"
+      - "postgres:172.30.10.105"
     depends_on:
       - spark-master
       - spark-worker
       - livy
 
+  hive:
+    build: hive/
+    image: hive:3.1.2-hadoop-3.0.0-spark-2.4.1
+    hostname: hive
+    container_name: data-science-hive
+    expose:
+      - 4040
+      - 8890
+    ports:
+      - 9080:8080
+      - 9443:8443
 
+      - 8890:8890
+    networks:
+      data-science:
+        ipv4_address: 172.30.10.103
+    volumes:
+      - ${PWD}/spark-master-volume/opt/zeppelin/cluster-logs:/opt/zeppelin/logs
+      - ${PWD}/spark-master-volume/notebook:/cluster/notebook/
+    environment:
+      MASTER: "spark://spark-master:7077"
+      SPARK_MASTER: "spark://spark-master:7077"
+      SPARK_HOME: /usr/spark
+    extra_hosts:
+      - "zeppelin:172.30.10.100"
+      - "spark-master:172.30.10.101"
+      - "spark-worker:172.30.10.102"
+      - "hive:172.30.10.103"
+      - "livy:172.30.10.104"
+      - "postgres:172.30.10.105"
+    depends_on:
+      - spark-master
+      - postgres
+
+
+networks:
+  data-science:
+    ipam:
+      config:
+        - subnet: 172.30.10.0/24
