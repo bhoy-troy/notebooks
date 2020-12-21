@@ -1,5 +1,6 @@
 #FROM bigdata-docker-compose_master:latest
 FROM jtroy/spark-base:0.1
+LABEL maintainer = "James Troy"
 
 ARG LIVY_VERSION=0.7.0-incubating
 ENV LIVY_HOME /usr/livy

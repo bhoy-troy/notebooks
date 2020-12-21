@@ -17,4 +17,6 @@ EXPOSE 8080 8443 4040
 RUN apt-get install python-lxml python-html5lib  -y
 RUN pip install  requests beautifulsoup4
 
-CMD ["/zeppelin/bin/zeppelin.sh"]
+
+#Add extra pip packages here if required
+CMD ["bash", "/zeppelin/bin/zeppelin.sh"]
