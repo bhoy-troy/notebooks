@@ -142,6 +142,10 @@ dmypy.json
 cython_debug/
 
 
+# any downloaded CSV files
+*.csv
+
+
 spark-master-volume
 spark-worker-volume
 data
