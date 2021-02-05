@@ -60,8 +60,11 @@ Livy [http://ds-livy:8998/ui](http://ds-livy:8998/ui)
 
 
 ### Linting
-
+ https://github.com/cytopia/docker-file-lint
+ 
+ 
     docker run --rm -i hadolint/hadolint < livy/Dockerfile
+    docker run --rm cytopia/file-lint file-crlf --help  
 
 
 ### Setting up black for Python pep8 in Jupyter
