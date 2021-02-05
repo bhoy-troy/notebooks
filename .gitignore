@@ -145,8 +145,11 @@ cython_debug/
 # any downloaded CSV files
 *.csv
 
-
-spark-master-volume
-spark-worker-volume
+docker-bigdata-cluster/data1
+docker-bigdata-cluster/data2
+docker-bigdata-cluster/spark-master-volume
+docker-bigdata-cluster/spark-worker-volume
 data
-livy_batches
+livy_batches #Ignore log files
+*.log
+vscode.code-workspace
