@@ -1,0 +1,28 @@
+[[source]]
+name = "pypi"
+verify_ssl = true
+url = "https://pypi.org/simple"
+
+[dev-packages]
+isort = {extras = ["pipfile_deprecated_finder", "requirements_deprecated_finder"], version = "*"}
+black = "==20.8b1"
+jupyter_contrib_nbextensions= "*"
+
+[packages]
+beautifulsoup4="==4.9.3"
+coloredlogs = "==14.0"
+dateparser = "==1.0.0"
+enum34 = "==1.1.20"
+jupyter="==1.0.0"
+lxml="==4.6.1"
+mariadb=" ==1.0.4"
+mysql-connector = "*"
+numpy="==1.19.4"
+python-dateutil = "*"
+pymysql = "*"
+requests="==2.24.0"
+sphinx = "*"
+rinohtype = "==0.4.2"
+
+[requires]
+python_version = "3.8"

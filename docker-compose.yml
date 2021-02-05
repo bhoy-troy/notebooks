@@ -141,7 +141,7 @@ services:
       - "ds-postgres:172.30.10.105"
 
   zeppelin:
-    build: zeppelin/
+    build: docker-bigdata-cluster/zeppelin/
     image: zeppelin:0.8.2-hadoop-3.0.0-spark-2.4.1
     hostname: ds-zeepelin
     container_name: data-science-zeppelin

@@ -1,0 +1,12 @@
+beautifulsoup4==4.9.3
+lxml==4.6.1
+requests==2.24.0
+numpy==1.19.4
+coloredlogs==14.0
+python-dateutil==1.15.0
+jupyter==1.0.0
+jupyter_contrib_nbextensions
+ipyparallel==6.3.0
+configparser~=5.0.1
+mariadb==1.0.4
+dateparser==1.0.0

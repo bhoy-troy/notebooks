@@ -1,0 +1,31 @@
+version: '3.4'
+services:
+  mariadb:
+    image: mariadb:10.2
+    container_name:  mariadb_server
+    environment:
+      MYSQL_ROOT_PASSWORD: root_pass
+      MYSQL_DATABASE: assignment2
+      MYSQL_USER: james
+      MYSQL_PASSWORD: james
+    logging:
+      driver: syslog
+      options:
+        tag: "{{.DaemonName}}(image={{.ImageName}};name={{.Name}};id={{.ID}})"
+    expose:
+      - 3306
+    networks:
+      mydb_net:
+        ipv4_address: 172.33.0.100
+    ports:
+      - 3306:3306
+#    restart: on-failure
+    volumes:
+     - ${PWD}/mariadb:/var/lib/mysql
+
+networks:
+  mydb_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.33.0.0/16
